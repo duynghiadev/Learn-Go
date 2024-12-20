@@ -1,9 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type TodoItem struct {
@@ -29,23 +31,11 @@ func main() {
 		UpdatedAt:   &now,
 	}
 
-	jsonData, err := json.Marshal(item)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	fmt.Println(string(jsonData))
-
-	jsonStr := `{"id":1,"title":"Learn Go","description":"Learn Go programming language","status":"Doing","created_at":"2024-12-20T03:14:31.588244Z","updated_at":null}`
-
-	var item2 TodoItem
-
-	if err := json.Unmarshal([]byte(jsonStr), &item2); err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	fmt.Println(item2)
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": item,
+		})
+	})
+	r.Run(":3000")
 }
