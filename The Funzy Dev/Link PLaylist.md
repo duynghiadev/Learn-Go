@@ -15,3 +15,7 @@ Chúc các bạn thành công với Khoá học Lập trình Golang căn bản t
 ---
 
 [Link](https://www.youtube.com/playlist?list=PLC4c48H3oDRwlxVzOv2L8CXF7tZmtPHkn)
+
+---
+
+Đây là khoá cơ bản, học xong khoá này thì học tiếp khoá nâng cao
