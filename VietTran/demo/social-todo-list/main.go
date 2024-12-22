@@ -1,18 +1,16 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"os"
 	"social-todo-list/common"
 	"social-todo-list/modules/item/model"
 	ginitem "social-todo-list/modules/item/transport/gin"
-	"strconv"
-
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 func main() {
@@ -47,7 +45,7 @@ func main() {
 			items.GET("", ListItem(db))
 			items.GET("/:id", ginitem.GetItem(db))
 			items.PATCH("/:id", ginitem.UpdateItem(db))
-			items.DELETE("/:id", DeleteItem(db))
+			items.DELETE("/:id", ginitem.DeleteItem(db))
 		}
 	}
 
@@ -57,30 +55,6 @@ func main() {
 		})
 	})
 	r.Run(":3000")
-}
-
-func DeleteItem(db *gorm.DB) func(*gin.Context) {
-	return func(c *gin.Context) {
-		id, err := strconv.Atoi(c.Param("id"))
-
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if err := db.Table(model.TodoItem{}.TableName()).Where("id = ?", id).Updates(map[string]interface{}{
-			"status": "Deleted",
-		}).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusOK, common.SimpleSuccessResponse(true))
-	}
 }
 
 func ListItem(db *gorm.DB) func(*gin.Context) {
