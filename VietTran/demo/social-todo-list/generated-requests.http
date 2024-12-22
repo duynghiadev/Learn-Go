@@ -24,12 +24,11 @@ DELETE http://localhost:3000/v1/items/{{id}}
 
 ### Update item by id
 PATCH http://localhost:3000/v1/items/{{id}}
-
 Content-Type: application/json
 
 {
   "title": "Updated Title 1",
   "description": "Updated Description",
-  "status": "Completed"
+  "status": "Done"
 }
 
