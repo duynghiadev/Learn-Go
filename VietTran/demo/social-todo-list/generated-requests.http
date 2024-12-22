@@ -28,7 +28,7 @@ PATCH http://localhost:3000/v1/items/{{id}}
 Content-Type: application/json
 
 {
-  "title": "Updated Title",
+  "title": "Updated Title 1",
   "description": "Updated Description",
   "status": "Completed"
 }
