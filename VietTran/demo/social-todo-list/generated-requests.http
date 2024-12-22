@@ -6,6 +6,9 @@ GET localhost:3000/ping
 
 <> 2024-12-21T182129.200.json
 
+### GET List item
+GET localhost:3000/v1/items
+
 ### Get item by id
 GET localhost:3000/v1/items/10
 
@@ -18,6 +21,12 @@ GET localhost:3000/v1/items/{{id}}
 <> 2024-12-21T184230.200.json
 <> 2024-12-21T184214.200.json
 <> 2024-12-21T184203.200.json
+
+### Get filter item by id - Doing
+GET localhost:3000/v1/items?status=Doing
+
+### Get filter item by id - Done
+GET localhost:3000/v1/items?status=Done
 
 ### Delete item by id
 DELETE http://localhost:3000/v1/items/{{id}}
