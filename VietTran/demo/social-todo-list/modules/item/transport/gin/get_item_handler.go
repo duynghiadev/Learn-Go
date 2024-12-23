@@ -1,13 +1,14 @@
 package ginitem
 
 import (
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"net/http"
 	"social-todo-list/common"
 	"social-todo-list/modules/item/biz"
 	"social-todo-list/modules/item/storage"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func GetItem(db *gorm.DB) func(*gin.Context) {
@@ -15,9 +16,7 @@ func GetItem(db *gorm.DB) func(*gin.Context) {
 		id, err := strconv.Atoi(c.Param("id"))
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
+			c.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
 			return
 		}
 
@@ -27,9 +26,7 @@ func GetItem(db *gorm.DB) func(*gin.Context) {
 		data, err := business.GetItemById(c.Request.Context(), id)
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": err.Error(),
-			})
+			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data))

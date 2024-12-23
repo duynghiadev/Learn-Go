@@ -1,13 +1,14 @@
 package ginitem
 
 import (
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"net/http"
 	"social-todo-list/common"
 	"social-todo-list/modules/item/biz"
 	"social-todo-list/modules/item/model"
 	"social-todo-list/modules/item/storage"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func ListItem(db *gorm.DB) func(*gin.Context) {
@@ -15,9 +16,7 @@ func ListItem(db *gorm.DB) func(*gin.Context) {
 		var paging common.Paging
 
 		if err := c.ShouldBind(&paging); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
+			c.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
 			return
 		}
 
@@ -26,9 +25,7 @@ func ListItem(db *gorm.DB) func(*gin.Context) {
 		var filter model.Filter
 
 		if err := c.ShouldBind(&filter); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
+			c.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
 			return
 		}
 

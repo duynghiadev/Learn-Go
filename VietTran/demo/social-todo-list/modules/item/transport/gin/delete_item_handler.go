@@ -1,13 +1,14 @@
 package ginitem
 
 import (
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"net/http"
 	"social-todo-list/common"
 	"social-todo-list/modules/item/biz"
 	"social-todo-list/modules/item/storage"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func DeleteItem(db *gorm.DB) func(*gin.Context) {
@@ -15,9 +16,7 @@ func DeleteItem(db *gorm.DB) func(*gin.Context) {
 		id, err := strconv.Atoi(c.Param("id"))
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
+			c.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
 			return
 		}
 
@@ -25,9 +24,7 @@ func DeleteItem(db *gorm.DB) func(*gin.Context) {
 		business := biz.NewDeleteItemBiz(store)
 
 		if err := business.DeleteItemById(c.Request.Context(), id); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
+			c.JSON(http.StatusBadRequest, err)
 			return
 		}
 

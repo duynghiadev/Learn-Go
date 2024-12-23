@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+	"social-todo-list/common"
 	"social-todo-list/modules/item/model"
 )
 
@@ -22,15 +23,22 @@ func (biz *updateItemBiz) UpdateItemById(ctx context.Context, id int, dataUpdate
 	data, err := biz.store.GetItem(ctx, map[string]interface{}{"id": id})
 
 	if err != nil {
-		return err
+		if err == common.ErrRecordNotFound {
+			return common.ErrCannotGetEntity(model.EntityName, err)
+		}
+		return common.ErrCannotUpdateEntity(model.EntityName, err)
 	}
 
 	if data.Status != nil && *data.Status == model.ItemStatusDeleted {
-		return model.ErrItemDeleted
+		return common.ErrEntityDeleted(model.EntityName, model.ErrItemDeleted)
 	}
 
-	if err := biz.store.UpdateItem(ctx, map[string]interface{}{"id": id}, dataUpdate); err != nil {
-		return err
+	if err := biz.store.UpdateItem(
+		ctx,
+		map[string]interface{}{"id": id},
+		dataUpdate,
+	); err != nil {
+		return common.ErrCannotUpdateEntity(model.EntityName, err)
 	}
 
 	return nil
