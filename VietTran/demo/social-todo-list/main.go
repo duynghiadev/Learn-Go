@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"social-todo-list/common"
+	"social-todo-list/middleware"
 	ginitem "social-todo-list/modules/item/transport/gin"
 
 	"github.com/gin-gonic/gin"
@@ -24,6 +27,8 @@ func main() {
 
 	r := gin.Default()
 
+	r.Use(middleware.Recovery())
+
 	v1 := r.Group("/v1")
 	{
 		items := v1.Group("/items")
@@ -37,6 +42,11 @@ func main() {
 	}
 
 	r.GET("/ping", func(c *gin.Context) {
+		go func() {
+			defer common.Recovery()
+			fmt.Println([]int{}[0])
+		}()
+
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
