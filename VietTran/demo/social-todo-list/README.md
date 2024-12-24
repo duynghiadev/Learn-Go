@@ -1,3 +1,6 @@
+- Mình đã xoá database dự án này rồi
+- Lần sau xem video và tạo lại database
+
 - Command to create new docker and run:
 
 ```bash
