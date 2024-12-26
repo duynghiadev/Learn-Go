@@ -34,11 +34,32 @@ func main() {
 	*/
 
 	// ---------------------------------------
-	fmt.Println("counting")
+
+	/*
+		start type 3
+	*/
+	// fmt.Println("counting")
+
+	// for i := 0; i < 10; i++ {
+	// 	defer fmt.Println(i)
+	// }
+
+	// fmt.Println("done")
+
+	/*
+		end type 3
+	*/
+
+	// ---------------------------------------
+
+	fmt.Println("Processing tasks")
 
 	for i := 0; i < 10; i++ {
-		defer fmt.Println(i)
+		func(task int) {
+			fmt.Printf("Starting task %d\n", task)
+			defer fmt.Printf("Cleaning up task %d\n", task)
+			fmt.Printf("Task %d is done\n", task)
+		}(i)
 	}
-
-	fmt.Println("done")
+	fmt.Println("All tasks are done")
 }
