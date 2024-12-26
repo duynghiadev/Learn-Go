@@ -1,8 +1,33 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
+
+func pow(m, n, lim float64) float64 {
+	if v := math.Pow(m, n); v < lim {
+		return v
+	}
+	return lim
+}
+
+// Square: bình phương của một số
+func checkEvenSquare(num, threshold int) int {
+	if square := num * num; square <= threshold {
+		if square%2 == 0 {
+			fmt.Printf("Square of %d is %d and is event.\n", num, square)
+		} else {
+			fmt.Printf("Square of %d is %d and is odd.\n", num, square)
+		}
+		return square
+	}
+	fmt.Printf("Square of %d exceeds the threshold (%d).\n", num, threshold)
+	return -1
+}
 
 func main() {
+	fmt.Println("------------start For loop---------------------")
 	sum := 0
 	cat := 0
 	j := 0
@@ -43,4 +68,14 @@ func main() {
 	fmt.Println("tom:", tom)
 	fmt.Println("black:", black)
 	fmt.Println("resultInfinite:", resultInfinite)
+	fmt.Println("------------end For loop---------------------")
+	/*
+		end For loop
+	*/
+
+	fmt.Println("result pow:", pow(3, 2, 10), pow(3, 3, 20))
+
+	fmt.Println("checkEvenSquare:", checkEvenSquare(2, 10))
+	fmt.Println("checkEvenSquare:", checkEvenSquare(3, 10))
+	fmt.Println("checkEvenSquare:", checkEvenSquare(5, 20))
 }
