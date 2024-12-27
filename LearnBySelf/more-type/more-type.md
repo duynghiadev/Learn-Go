@@ -107,4 +107,16 @@ fmt.Println(m)
 
 ---
 
+# Summary Table
+
+| Type   | Description                            | Key Features                     |
+| ------ | -------------------------------------- | -------------------------------- |
+| Struct | Composite data type for related fields | Fixed layout, group related data |
+| Slice  | Dynamic, flexible view into an array   | Resizable, supports slicing      |
+| Map    | Collection of unique key-value pairs   | Fast lookups, unordered keys     |
+
+These concepts are foundational for building robust and efficient Go programs. Let me know if you'd like deeper explanations or exercises!
+
+---
+
 This overview covers pointers, structs, arrays, slices, ranges, and maps in Go. These fundamental types and constructs are crucial for building more complex programs in Go.
