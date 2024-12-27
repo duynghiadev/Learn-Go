@@ -40,4 +40,14 @@ func main() {
 		{3, 4},
 	}
 	fmt.Println("v4 = ", v4)
+
+	// --- Structs, Slice, Array, Map, Function Example ---
+	fmt.Println("\n--- Structs, Slice, Array, Map, Function Example ---")
+	var a [2]Vertex
+	a[0] = Vertex{1, 2}
+	a[1] = Vertex{3, 4}
+	fmt.Println("a = ", a)
+
+	// --- Structs, Slice, Array, Map, Function more advanced example ---
+
 }
