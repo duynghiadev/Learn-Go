@@ -144,4 +144,35 @@ func main() {
 		Price: 300.00,
 	}
 	fmt.Printf("Anonymous Product: %+v\n", anonymousProduct)
+
+	fmt.Println("\n==============================")
+
+	// Initialize an array of names
+	names := [4]string{"John", "Paul", "George", "Ringo"}
+	fmt.Println("Original Array:", names)
+
+	// Create slices from the array
+	a1 := names[0:2]
+	b1 := names[1:3]
+	fmt.Println("Slice A:", a1)
+	fmt.Println("Slice B:", b1)
+
+	// Modify the shared underlying array through slice B
+	b1[0] = "XXX"
+	fmt.Println("\nAfter modifying Slice B:")
+	fmt.Println("Slice A:", a1)
+	fmt.Println("Slice B:", b1)
+	fmt.Println("Modified Array:", names)
+
+	// Enhanced Example: Using a map to count occurrences of names
+	common.CountOccurrences(names[:]) // Pass the slice of the array
+
+	// Using a function to print and manipulate slices
+	common.PrintAndModifySlices(names[:])
+
+	fmt.Printf("\n==============================\n")
+
+	names1 := []string{"John", "Paul", "George", "John", "Paul", "John"}
+	common.CountOccurrences1(names1)
+
 }
