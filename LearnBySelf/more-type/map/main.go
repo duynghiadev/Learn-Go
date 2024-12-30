@@ -7,6 +7,11 @@ type Vertex struct {
 	Lat, Long float64
 }
 
+type Country struct {
+	Name   string
+	Cities []string
+}
+
 func main() {
 	// Initialize a map with string keys and Vertex values
 	locations := make(map[string]Vertex)
@@ -49,8 +54,19 @@ func main() {
 		"India": {"Delhi", "Mumbai", "Bangalore"},
 	}
 
-	fmt.Println("Cities by country:")
+	// other type, but same as above (map of slices)
+	countries1 := []Country{
+		{Name: "USA", Cities: []string{"San Jose", "California", "Florida"}},
+		{Name: "Vietnam", Cities: []string{"Hanoi", "Da Nang", "Ho Chi Minh"}},
+	}
+
+	fmt.Println("Cities by country map of slices:")
 	for country, cities := range countries {
 		fmt.Printf("%s: %v\n", country, cities)
+	}
+
+	fmt.Println("Cities by country slices of struct:")
+	for _, country := range countries1 {
+		fmt.Printf("%s: %v\n", country.Name, country.Cities)
 	}
 }
