@@ -54,6 +54,28 @@ func main() {
 		"India": {"Delhi", "Mumbai", "Bangalore"},
 	}
 
+	// Map literal
+	var m = map[string]Vertex{
+		"Bell Labs": {40.68433, -74.39967},
+		"Google":    {37.42202, -122.08408},
+	}
+	fmt.Println("Map literal:", m)
+
+	// Mutating maps
+	var m1 = make(map[string]int)
+
+	m1["Answer"] = 42
+	fmt.Println("The value 1:", m1["Answer"])
+
+	m1["Answer"] = 48
+	fmt.Println("The value 2:", m1["Answer"])
+
+	delete(m1, "Answer")
+	fmt.Println("The value 3:", m1["Answer"])
+
+	value, ok := m1["Answer"]
+	fmt.Println("The value 4:", value, "Present?", ok)
+
 	// other type, but same as above (map of slices)
 	countries1 := []Country{
 		{Name: "USA", Cities: []string{"San Jose", "California", "Florida"}},
