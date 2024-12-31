@@ -2,6 +2,10 @@
 
 Go, often referred to as Golang, is a statically typed, compiled programming language designed by Google. It was created to address issues of scalability and productivity in programming large-scale software systems.
 
+# A Tour of Go
+
+[document](https://go.dev/tour/list)
+
 ## Key Features
 
 - **Statically Typed**: Ensures type safety and performance.
