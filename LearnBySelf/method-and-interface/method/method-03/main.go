@@ -45,8 +45,7 @@ func createProduct(w http.ResponseWriter, r *http.Request) {
 
 	// type 1
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(decoder)
-	if err != nil {
+	if err := decoder.Decode(&newProduct); err != nil {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
