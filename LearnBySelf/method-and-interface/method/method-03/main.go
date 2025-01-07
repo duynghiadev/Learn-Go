@@ -42,10 +42,20 @@ func getProducts(w http.ResponseWriter, r *http.Request) {
 // Handler thêm một sản phẩm mới
 func createProduct(w http.ResponseWriter, r *http.Request) {
 	var newProduct Product
-	if err := json.NewDecoder(r.Body).Decode(&newProduct); err != nil {
+
+	// type 1
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(decoder)
+	if err != nil {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
+
+	// type 2
+	// if err := json.NewDecoder(r.Body).Decode(&newProduct); err != nil {
+	// 	http.Error(w, "Invalid input", http.StatusBadRequest)
+	// 	return
+	// }
 
 	productsMu.Lock()
 	defer productsMu.Unlock()
