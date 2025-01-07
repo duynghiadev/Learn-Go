@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/gorilla/mux"
@@ -19,42 +20,108 @@ type Product struct {
 	Stock int     `json:"stock"`
 }
 
+// Struct để trả về thông tin kết quả bao gồm danh sách sản phẩm và thông tin phân trang
+type PaginatedResponse struct {
+	Total      int       `json:"total"`
+	Page       int       `json:"page"`
+	Limit      int       `json:"limit"`
+	TotalPages int       `json:"total_pages"`
+	Products   []Product `json:"products"`
+}
+
 var (
 	products   = make(map[int]Product) // Lưu trữ danh sách sản phẩm
 	nextID     = 1                     // ID tự động tăng
 	productsMu sync.Mutex              // Bảo vệ dữ liệu khi truy cập đồng thời
 )
 
-// Handler lấy danh sách sản phẩm
+// Hàm phân trang và lọc
+func paginateAndFilter(products map[int]Product, page, limit int, nameFilter string) ([]Product, int) {
+	var filteredProducts []Product
+
+	// Lọc theo tên sản phẩm nếu có
+	for _, product := range products {
+		if nameFilter != "" && !strings.Contains(strings.ToLower(product.Name), strings.ToLower(nameFilter)) {
+			continue
+		}
+		filteredProducts = append(filteredProducts, product)
+	}
+
+	// Tính tổng số sản phẩm sau khi lọc
+	total := len(filteredProducts)
+
+	// Phân trang
+	start := (page - 1) * limit
+	end := start + limit
+	if start > total {
+		return []Product{}, total
+	}
+	if end > total {
+		end = total
+	}
+
+	return filteredProducts[start:end], total
+}
+
+// Handler lấy danh sách sản phẩm với phân trang và lọc
 func getProducts(w http.ResponseWriter, r *http.Request) {
 	productsMu.Lock()
 	defer productsMu.Unlock()
 
-	var productList []Product
-	for _, product := range products {
-		productList = append(productList, product)
+	// Lấy tham số truy vấn
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	limit, err2 := strconv.Atoi(r.URL.Query().Get("limit"))
+
+	fmt.Println("page:", page, "limit:", limit)
+
+	// Nếu không có tham số page hoặc limit, trả về tất cả sản phẩm
+	if err != nil || page <= 0 || err2 != nil || limit <= 0 {
+		// Trả về tất cả sản phẩm
+		var allProducts []Product
+		for _, product := range products {
+			allProducts = append(allProducts, product)
+		}
+
+		// Nếu không có sản phẩm nào
+		if len(allProducts) == 0 {
+			http.Error(w, "Product not found", http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(allProducts)
+		return
+	}
+
+	// Nếu có tham số page và limit, thực hiện phân trang và lọc
+	nameFilter := r.URL.Query().Get("name")
+	paginatedProducts, total := paginateAndFilter(products, page, limit, nameFilter)
+
+	// Tính tổng số trang
+	totalPages := (total + limit - 1) / limit
+
+	// Tạo response chứa thông tin phân trang và sản phẩm
+	response := PaginatedResponse{
+		Total:      total,
+		Page:       page,
+		Limit:      limit,
+		TotalPages: totalPages,
+		Products:   paginatedProducts,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(productList)
+	json.NewEncoder(w).Encode(response)
 }
 
 // Handler thêm một sản phẩm mới
 func createProduct(w http.ResponseWriter, r *http.Request) {
 	var newProduct Product
 
-	// type 1
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&newProduct); err != nil {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
-
-	// type 2
-	// if err := json.NewDecoder(r.Body).Decode(&newProduct); err != nil {
-	// 	http.Error(w, "Invalid input", http.StatusBadRequest)
-	// 	return
-	// }
 
 	productsMu.Lock()
 	defer productsMu.Unlock()
