@@ -16,3 +16,10 @@ type PaginatedResponse struct {
 	TotalPages int       `json:"total_pages"`
 	Products   []Product `json:"products"`
 }
+
+// Struct để trả về tất cả các sản phẩm
+type AllResponse struct {
+	Total      int       `json:"total_products"`
+	TotalPages int       `json:"total_pages"`
+	Products   []Product `json:"all_products"`
+}

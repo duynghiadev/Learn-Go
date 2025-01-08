@@ -23,8 +23,6 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 	page, err := strconv.Atoi(r.URL.Query().Get("page"))
 	limit, err2 := strconv.Atoi(r.URL.Query().Get("limit"))
 
-	fmt.Println("page:", page, "limit:", limit)
-
 	// Nếu không có tham số page hoặc limit, trả về tất cả sản phẩm
 	if err != nil || page <= 0 || err2 != nil || limit <= 0 {
 		// Trả về tất cả sản phẩm
@@ -33,14 +31,20 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 			allProducts = append(allProducts, product)
 		}
 
-		// Nếu không có sản phẩm nào
-		if len(allProducts) == 0 {
-			http.Error(w, "Product not found", http.StatusNotFound)
-			return
+		// Tính tổng số sản phẩm và số trang
+		total := len(allProducts)
+		totalPages := (total + 10 - 1) / 10 // 10 sản phẩm mỗi trang
+
+		// Tạo response chứa tất cả sản phẩm
+		response := AllResponse{
+			Total:      total,
+			TotalPages: totalPages,
+			Products:   allProducts,
 		}
 
+		// Trả về response dưới dạng JSON
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(allProducts)
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 
@@ -50,7 +54,6 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 
 	// Tính tổng số trang
 	totalPages := (total + limit - 1) / limit
-	fmt.Println("totalPages:", totalPages)
 
 	// Tạo response chứa thông tin phân trang và sản phẩm
 	response := PaginatedResponse{
@@ -61,6 +64,7 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 		Products:   paginatedProducts,
 	}
 
+	// Trả về response dưới dạng JSON
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
