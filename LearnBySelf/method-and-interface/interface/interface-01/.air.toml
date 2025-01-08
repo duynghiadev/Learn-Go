@@ -1,0 +1,50 @@
+# Cấu hình theo dõi thay đổi mã nguồn
+[watch]
+root = "."  # Thư mục gốc của dự án
+dirs = ["."]  # Theo dõi thư mục gốc
+extensions = ["go", "tpl", "tmpl", "html"]  # Các loại tệp cần theo dõi
+
+# Cấu hình các thư mục và tệp không cần theo dõi
+[ignore]
+dirs = ["assets", "tmp", "vendor", "testdata"]  # Các thư mục cần loại bỏ khỏi theo dõi
+files = []  # Các tệp không cần theo dõi
+regex = ["_test.go"]  # Các tệp test không cần theo dõi
+
+# Cấu hình build và chạy lại ứng dụng khi có thay đổi
+[build]
+args_bin = []  # Thêm tham số lệnh nếu cần
+bin = "./tmp/main"  # Đường dẫn đến tệp nhị phân (output)
+cmd = "go build -o ./tmp/main ."  # Lệnh build, tạo ra tệp thực thi
+delay = 1000  # Thời gian chờ (ms) giữa các lần build
+exclude_dir = ["assets", "tmp", "vendor", "testdata"]  # Các thư mục không cần build lại
+exclude_file = []  # Các tệp không cần build lại
+exclude_regex = ["_test.go"]  # Các tệp test không cần build lại
+exclude_unchanged = false  # Build lại ngay cả khi không có thay đổi
+follow_symlink = false  # Không theo dõi symlink
+full_bin = ""  # Đường dẫn đầy đủ đến tệp nhị phân nếu cần
+include_dir = []  # Các thư mục cần build lại (nếu có)
+include_ext = ["go", "tpl", "tmpl", "html"]  # Các loại tệp cần build lại
+kill_delay = "0s"  # Thời gian chờ trước khi dừng ứng dụng
+log = "build-errors.log"  # Đường dẫn đến tệp log nếu có lỗi
+send_interrupt = false  # Không gửi tín hiệu ngắt
+stop_on_error = true  # Dừng nếu có lỗi khi build
+
+# Cấu hình màu sắc cho các thành phần trong Air
+[color]
+app = ""  # Màu sắc cho ứng dụng
+build = "yellow"  # Màu sắc cho quá trình build
+main = "magenta"  # Màu sắc cho main file
+runner = "green"  # Màu sắc cho runner
+watcher = "cyan"  # Màu sắc cho watcher
+
+# Cấu hình log
+[log]
+time = true  # Ghi thời gian trong log
+
+# Cấu hình miscellaneous
+[misc]
+clean_on_exit = true  # Tự động làm sạch khi thoát
+
+# Cấu hình màn hình
+[screen]
+clear_on_rebuild = true  # Xóa màn hình mỗi khi rebuild
