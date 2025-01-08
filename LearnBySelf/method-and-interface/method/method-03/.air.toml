@@ -39,7 +39,7 @@ watcher = "cyan"  # Màu sắc cho watcher
 
 # Cấu hình log
 [log]
-time = false  # Không ghi thời gian trong log
+time = true  # Không ghi thời gian trong log
 
 # Cấu hình miscellaneous
 [misc]
