@@ -332,22 +332,6 @@ func loggingMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
-	// // Tải dữ liệu từ file khi khởi động
-	// loadData()
-
-	// r := mux.NewRouter()
-
-	// // Định nghĩa các endpoint
-	// r.HandleFunc("/products", getProducts).Methods("GET")
-	// r.HandleFunc("/products", createProduct).Methods("POST")
-	// r.HandleFunc("/products/{id:[0-9]+}", getProduct).Methods("GET")
-	// r.HandleFunc("/products/{id:[0-9]+}", updateProduct).Methods("PUT")
-	// r.HandleFunc("/products/{id:[0-9]+}", deleteProduct).Methods("DELETE")
-	// r.Use(loggingMiddleware)
-
-	// fmt.Println("Server is running on port 8888")
-	// log.Fatal(http.ListenAndServe(":8888", r))
-
 	// Tải dữ liệu từ file khi khởi động
 	loadData()
 
