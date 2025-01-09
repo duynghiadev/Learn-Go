@@ -1,117 +1,163 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"math"
+	"io"
+	"strings"
 )
 
-// --- Lesson 1: Abser Interface ---
-type Abser interface {
-	Abs() float64
+// --- Interfaces and Structs ---
+type ProductManager interface {
+	AddProduct(Product) error
+	GetProduct(id int) (Product, error)
+	UpdateProduct(id int, newProduct Product) error
+	DeleteProduct(id int) error
+	ListProducts() []Product
 }
 
-// MyFloat type implementing Abser
-type MyFloat float64
+type Product struct {
+	ID    int
+	Name  string
+	Price float64
+	Stock int
+}
 
-func (f MyFloat) Abs() float64 {
-	if f < 0 {
-		return float64(-f)
+// Implements Stringer for Product
+func (p Product) String() string {
+	return fmt.Sprintf("Product[ID=%d, Name=%q, Price=%.2f, Stock=%d]", p.ID, p.Name, p.Price, p.Stock)
+}
+
+// ProductStore implements ProductManager
+type ProductStore struct {
+	products map[int]Product
+}
+
+func (ps *ProductStore) AddProduct(p Product) error {
+	if _, exists := ps.products[p.ID]; exists {
+		return fmt.Errorf("product with ID %d already exists", p.ID)
 	}
-	return float64(f)
+	ps.products[p.ID] = p
+	return nil
 }
 
-// Vertex struct implementing Abser
-type Vertex struct {
-	X, Y float64
-}
-
-func (v *Vertex) Abs() float64 {
-	if v == nil {
-		return 0
+func (ps *ProductStore) GetProduct(id int) (Product, error) {
+	if p, exists := ps.products[id]; exists {
+		return p, nil
 	}
-	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+	return Product{}, fmt.Errorf("product with ID %d not found", id)
 }
 
-// --- Lesson 2: Interface with Methods (Nil Handling) ---
-type I interface {
-	M()
-}
-
-// T struct implementing I
-type T struct {
-	S string
-}
-
-func (t *T) M() {
-	if t == nil {
-		fmt.Println("<nil>")
-		return
+func (ps *ProductStore) UpdateProduct(id int, newProduct Product) error {
+	if _, exists := ps.products[id]; !exists {
+		return fmt.Errorf("cannot update product with ID %d: not found", id)
 	}
-	fmt.Println(t.S)
+	ps.products[id] = newProduct
+	return nil
 }
 
-// --- Lesson 3: The Empty Interface ---
-func emptyInterfaceExample() {
-	fmt.Println("\nLesson 3: The Empty Interface")
-	var i interface{}
-	describeEmpty(i)
+func (ps *ProductStore) DeleteProduct(id int) error {
+	if _, exists := ps.products[id]; !exists {
+		return fmt.Errorf("cannot delete product with ID %d: not found", id)
+	}
+	delete(ps.products, id)
+	return nil
+}
 
-	i = 42
-	describeEmpty(i)
+func (ps *ProductStore) ListProducts() []Product {
+	var list []Product
+	for _, p := range ps.products {
+		list = append(list, p)
+	}
+	return list
+}
 
-	i = "hello"
-	describeEmpty(i)
-
-	// Demonstrating type assertion
-	if val, ok := i.(string); ok {
-		fmt.Printf("Type assertion successful: %q is a string\n", val)
-	} else {
-		fmt.Println("Type assertion failed")
+// --- Utility Functions ---
+func printProductDetails(i interface{}) {
+	switch v := i.(type) {
+	case Product:
+		fmt.Printf("Product Details: %s\n", v)
+	case error:
+		fmt.Printf("Error: %v\n", v)
+	default:
+		fmt.Printf("Unknown Type: %T\n", v)
 	}
 }
 
-func describeEmpty(i interface{}) {
-	fmt.Printf("(%v, %T)\n", i, i)
-}
+// --- Example with Readers ---
+func readProductFromInput(input io.Reader) (Product, error) {
+	var id int
+	var name string
+	var price float64
+	var stock int
 
-// --- Helper Functions ---
-func describe(i I) {
-	fmt.Printf("(%v, %T)\n", i, i)
-}
+	_, err := fmt.Fscanf(input, "%d %s %f %d", &id, &name, &price, &stock)
+	if err != nil {
+		return Product{}, errors.New("invalid input format, expected: ID Name Price Stock")
+	}
 
-// --- Lesson 1 Example ---
-func abserExample() {
-	fmt.Println("Lesson 1: Abser Interface")
-	var a Abser
-	f := MyFloat(-math.Sqrt2)
-	v := Vertex{3, 4}
-
-	a = f // MyFloat implements Abser
-	fmt.Printf("MyFloat: %v\n", a.Abs())
-
-	a = &v // *Vertex implements Abser
-	fmt.Printf("*Vertex: %v\n", a.Abs())
-}
-
-// --- Lesson 2 Example ---
-func interfaceWithMethodsExample() {
-	fmt.Println("\nLesson 2: Interface with Methods (Nil Handling)")
-	var i I
-
-	var t *T
-	i = t
-	describe(i)
-	i.M()
-
-	i = &T{"hello"}
-	describe(i)
-	i.M()
+	return Product{ID: id, Name: name, Price: price, Stock: stock}, nil
 }
 
 // --- Main Function ---
 func main() {
-	// Run each lesson example
-	abserExample()
-	interfaceWithMethodsExample()
-	emptyInterfaceExample()
+	store := &ProductStore{products: make(map[int]Product)}
+
+	// Adding products
+	fmt.Println("Adding Products:")
+	store.AddProduct(Product{ID: 1, Name: "Laptop", Price: 999.99, Stock: 10})
+	store.AddProduct(Product{ID: 2, Name: "Mouse", Price: 25.50, Stock: 50})
+	store.AddProduct(Product{ID: 3, Name: "Keyboard", Price: 45.00, Stock: 30})
+
+	// Listing products
+	fmt.Println("\nListing Products:")
+	for _, p := range store.ListProducts() {
+		printProductDetails(p)
+	}
+
+	// Getting a product
+	fmt.Println("\nGetting Product with ID 2:")
+	product, err := store.GetProduct(2)
+	printProductDetails(product)
+	printProductDetails(err)
+
+	// Updating a product
+	fmt.Println("\nUpdating Product with ID 3:")
+	err = store.UpdateProduct(3, Product{ID: 3, Name: "Mechanical Keyboard", Price: 75.00, Stock: 20})
+	printProductDetails(err)
+
+	// Listing products after update
+	fmt.Println("\nListing Products After Update:")
+	for _, p := range store.ListProducts() {
+		printProductDetails(p)
+	}
+
+	// Deleting a product
+	fmt.Println("\nDeleting Product with ID 1:")
+	err = store.DeleteProduct(1)
+	printProductDetails(err)
+
+	// Listing products after deletion
+	fmt.Println("\nListing Products After Deletion:")
+	for _, p := range store.ListProducts() {
+		printProductDetails(p)
+	}
+
+	// Reading a product from input
+	fmt.Println("\nReading Product From Input:")
+	input := strings.NewReader("4 Monitor 199.99 15")
+	newProduct, err := readProductFromInput(input)
+	printProductDetails(err)
+	printProductDetails(newProduct)
+
+	// Adding the new product
+	fmt.Println("\nAdding New Product From Input:")
+	err = store.AddProduct(newProduct)
+	printProductDetails(err)
+
+	// Final list of products
+	fmt.Println("\nFinal Product List:")
+	for _, p := range store.ListProducts() {
+		printProductDetails(p)
+	}
 }
