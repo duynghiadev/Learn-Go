@@ -5,12 +5,12 @@ import (
 	"math"
 )
 
-// Abser interface
+// --- Lesson 1: Abser Interface ---
 type Abser interface {
 	Abs() float64
 }
 
-// MyFloat type
+// MyFloat type implementing Abser
 type MyFloat float64
 
 func (f MyFloat) Abs() float64 {
@@ -20,12 +20,11 @@ func (f MyFloat) Abs() float64 {
 	return float64(f)
 }
 
-// Vertex struct
+// Vertex struct implementing Abser
 type Vertex struct {
 	X, Y float64
 }
 
-// Abs implements Abser for *Vertex
 func (v *Vertex) Abs() float64 {
 	if v == nil {
 		return 0
@@ -33,17 +32,16 @@ func (v *Vertex) Abs() float64 {
 	return math.Sqrt(v.X*v.X + v.Y*v.Y)
 }
 
-// I interface
+// --- Lesson 2: Interface with Methods (Nil Handling) ---
 type I interface {
 	M()
 }
 
-// T struct
+// T struct implementing I
 type T struct {
 	S string
 }
 
-// M method implements I for *T
 func (t *T) M() {
 	if t == nil {
 		fmt.Println("<nil>")
@@ -52,9 +50,38 @@ func (t *T) M() {
 	fmt.Println(t.S)
 }
 
-// Example 1: Demonstrating Abser interface
-func example1() {
-	fmt.Println("Example 1: Abser Interface")
+// --- Lesson 3: The Empty Interface ---
+func emptyInterfaceExample() {
+	fmt.Println("\nLesson 3: The Empty Interface")
+	var i interface{}
+	describeEmpty(i)
+
+	i = 42
+	describeEmpty(i)
+
+	i = "hello"
+	describeEmpty(i)
+
+	// Demonstrating type assertion
+	if val, ok := i.(string); ok {
+		fmt.Printf("Type assertion successful: %q is a string\n", val)
+	} else {
+		fmt.Println("Type assertion failed")
+	}
+}
+
+func describeEmpty(i interface{}) {
+	fmt.Printf("(%v, %T)\n", i, i)
+}
+
+// --- Helper Functions ---
+func describe(i I) {
+	fmt.Printf("(%v, %T)\n", i, i)
+}
+
+// --- Lesson 1 Example ---
+func abserExample() {
+	fmt.Println("Lesson 1: Abser Interface")
 	var a Abser
 	f := MyFloat(-math.Sqrt2)
 	v := Vertex{3, 4}
@@ -64,14 +91,11 @@ func example1() {
 
 	a = &v // *Vertex implements Abser
 	fmt.Printf("*Vertex: %v\n", a.Abs())
-
-	// Uncommenting the following line will cause a compilation error:
-	// a = v // Vertex (not *Vertex) does NOT implement Abser
 }
 
-// Example 2: Demonstrating I interface with nil values
-func example2() {
-	fmt.Println("\nExample 2: I Interface with Nil Values")
+// --- Lesson 2 Example ---
+func interfaceWithMethodsExample() {
+	fmt.Println("\nLesson 2: Interface with Methods (Nil Handling)")
 	var i I
 
 	var t *T
@@ -84,13 +108,10 @@ func example2() {
 	i.M()
 }
 
-// describe function
-func describe(i I) {
-	fmt.Printf("(%v, %T)\n", i, i)
-}
-
-// main function
+// --- Main Function ---
 func main() {
-	example1()
-	example2()
+	// Run each lesson example
+	abserExample()
+	interfaceWithMethodsExample()
+	emptyInterfaceExample()
 }
