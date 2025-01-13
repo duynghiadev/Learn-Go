@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -18,14 +19,30 @@ import (
 )
 
 func main() {
+	// Load environment variables from .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+
+	// Get credentials from environment variables
+	mongoUsername := os.Getenv("MONGO_USERNAME")
+	mongoPassword := os.Getenv("MONGO_PASSWORD")
+	mongoURI := os.Getenv("MONGO_URI")
+	mongoDB := os.Getenv("MONGO_DB")
+
+	if mongoUsername == "" || mongoPassword == "" || mongoURI == "" || mongoDB == "" {
+		log.Fatal("Missing required MongoDB credentials in environment variables")
+	}
+
+	// Construct the MongoDB URI
+	mongoConnectionURI := "mongodb+srv://" + mongoUsername + ":" + mongoPassword + "@" + mongoURI + "/" + mongoDB + "?retryWrites=true&w=majority"
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	// Set MongoDB client options
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017").SetAuth(options.Credential{
-		Username: "root",
-		Password: "example",
-	})
+	clientOptions := options.Client().ApplyURI(mongoConnectionURI)
 
 	client, err := mongo.Connect(ctx, clientOptions)
 	// cp 0.006 (0.01) -> 1CPU x6 -> 6CPU
