@@ -1,5 +1,7 @@
 The project includes APIs that I implemented within the `go-for-ts-developers` folder.
 
+In this project, there are three folders: **part 1** , **part 2** , and **part 3** , corresponding to each respective section.
+
 ---
 
 # Go for TypeScript developers
