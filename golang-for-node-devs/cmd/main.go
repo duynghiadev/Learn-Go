@@ -17,7 +17,7 @@ func main() {
 	app := fiber.New()
 
 	app.Use("/api", func(c *fiber.Ctx) error {
-		fmt.Println("Hello from middleware")
+		fmt.Println("Hello from middleware Golang")
 		return c.Next()
 	})
 

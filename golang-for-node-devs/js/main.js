@@ -6,8 +6,12 @@ const app = express();
 
 app.use(express.json());
 
-app.post("/api/products", createProduct);
+app.use((req, res, next) => {
+  console.log("Hello from middleware nodejs");
+  next();
+});
 
+app.post("/api/products", createProduct);
 app.get("/api/products", getProducts);
 
 async function main() {

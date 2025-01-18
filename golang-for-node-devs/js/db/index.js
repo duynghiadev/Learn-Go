@@ -1,5 +1,5 @@
 const { MongoClient } = require("mongodb");
-require("dotenv").config(); // Tải các biến môi trường từ tệp .env
+require("dotenv").config();
 
 const URI = process.env.MONGO_URI;
 const databaseStr = process.env.DATABASE_NAME;
