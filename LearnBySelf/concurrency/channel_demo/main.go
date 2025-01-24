@@ -1,33 +1,26 @@
 package main
 
 import (
-	"fmt"
+	"channel_golang/function"
+	"time"
 )
 
-func sum(s []int, c chan int) {
-	sum := 0
-	for _, v := range s {
-		fmt.Println("value:", v)
-		sum += v
-	}
-	c <- sum // gửi sum vào channel
-}
-
 func main() {
-	s := []int{7, 2, 8, -9, 4, 0}
+	// Create a channel for communication
+	ch := make(chan int)
 
-	c := make(chan int)
+	// Number of items to produce
+	itemCount := 5
 
-	// In ra các phần của mảng để debug
-	fmt.Println("Nửa đầu mảng:", s[:len(s)/2])
-	fmt.Println("Nửa sau mảng:", s[len(s)/2:])
+	// Start producer and consumer as goroutines
+	go function.Producer(ch, itemCount)
+	go function.Consumer(ch)
 
-	go sum(s[:len(s)/2], c)
-	go sum(s[len(s)/2:], c)
+	// Wait for producer and consumer to finish
+	time.Sleep(4 * time.Second)
 
-	x, y := <-c, <-c // nhận giá trị từ channel
+	// Call AddProduct to demonstrate the Sum function
+	function.AddProduct()
 
-	fmt.Println("Tổng phần 1:", x)
-	fmt.Println("Tổng phần 2:", y)
-	fmt.Println("Tổng cuối cùng:", x+y)
+	println("Program completed.")
 }
