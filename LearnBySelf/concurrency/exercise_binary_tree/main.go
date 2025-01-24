@@ -15,7 +15,7 @@ func Walk(t *tree.Tree, ch chan int) {
 		if t == nil {
 			return
 		}
-		// Inorder traversal: Left -> Root -> Right
+		// In order traversal: Left -> Root -> Right
 		walker(t.Left)
 		ch <- t.Value
 		walker(t.Right)
