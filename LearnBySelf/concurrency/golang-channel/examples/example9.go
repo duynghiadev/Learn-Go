@@ -6,7 +6,7 @@ import (
 )
 
 func sender(c chan<- int, name string) {
-	for i := 1; i <= 100; i++ {
+	for i := 1; i <= 2; i++ {
 		c <- 1
 		fmt.Printf("%s has sent 1 to channel\n", name)
 		runtime.Gosched()
@@ -26,7 +26,7 @@ func Example9() {
 		start += <-myChan
 		fmt.Println(start)
 
-		if start >= 300 {
+		if start >= 6 {
 			break
 		}
 	}

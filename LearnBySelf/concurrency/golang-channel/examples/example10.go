@@ -9,7 +9,7 @@ func publisher() <-chan int {
 	c := make(chan int)
 
 	go func() {
-		for i := 1; i <= 1000; i++ {
+		for i := 1; i <= 5; i++ {
 			c <- i
 		}
 		close(c)
