@@ -1,55 +1,33 @@
 package main
 
 import (
-	"fmt"
-	"time"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
-type Student struct {
-	firstName string
-	lastName  string
-	email     string
+func getUser(c echo.Context) error {
+	id := c.Param("id")
+	return c.String(http.StatusOK, id)
 }
 
-func (s *Student) Email() string {
-	s.email = "duynghia@gmail.com"
-	return s.email
-}
-
-func g1() {
-	fmt.Println("1")
+func show(c echo.Context) error {
+	team := c.QueryParam("team")
+	member := c.QueryParam("member")
+	return c.String(http.StatusOK, "team:"+team+", member:"+member)
 }
 
 func main() {
-	s := Student{
-		firstName: "nghia",
-		lastName:  "Le",
-		email:     "abc@gmail.com",
-	}
-	fmt.Println(s)
+	e := echo.New()
 
-	valueEmail := s.Email()
-	fmt.Println(valueEmail)
+	e.Use(middleware.Logger())
 
-	fmt.Println(s.email)
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
+	})
+	e.GET("/user/:id", getUser)
+	e.GET("/show", show)
 
-	// go routine
-	go g1()
-
-	go func() {
-		fmt.Println("2")
-	}()
-
-	// channel: propose of channel is interactive with go routine
-	c := make(chan int)
-	go func() {
-		c <- 100
-	}()
-
-	go func() {
-		fmt.Println(<-c)
-	}()
-
-	time.Sleep(time.Second)
-
+	e.Logger.Fatal(e.Start(":1323"))
 }
