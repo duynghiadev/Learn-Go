@@ -7,10 +7,11 @@ import (
 	"backend-github-trending/model/req"
 	"backend-github-trending/repository"
 	"backend-github-trending/security"
+	"net/http"
+
 	"github.com/dgrijalva/jwt-go"
 	uuid "github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 type UserHandler struct {

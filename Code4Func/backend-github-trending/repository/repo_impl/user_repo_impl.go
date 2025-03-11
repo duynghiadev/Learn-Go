@@ -9,8 +9,9 @@ import (
 	"backend-github-trending/repository"
 	"context"
 	"database/sql"
-	"github.com/lib/pq"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 type UserRepoImpl struct {
@@ -81,7 +82,7 @@ func (u UserRepoImpl) SelectUserById(context context.Context, userId string) (mo
 func (u UserRepoImpl) UpdateUser(context context.Context, user model.User) (model.User, error) {
 	sqlStatement := `
 		UPDATE users
-		SET 
+		SET
 			full_name  = (CASE WHEN LENGTH(:full_name) = 0 THEN full_name ELSE :full_name END),
 			email = (CASE WHEN LENGTH(:email) = 0 THEN email ELSE :email END),
 			updated_at 	  = COALESCE (:updated_at, updated_at)

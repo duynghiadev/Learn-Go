@@ -8,8 +8,9 @@ import (
 	"backend-github-trending/repository"
 	"context"
 	"database/sql"
-	"github.com/lib/pq"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 type GithubRepoImpl struct {
@@ -40,10 +41,10 @@ func (g GithubRepoImpl) SelectRepoByName(context context.Context, name string) (
 func (g GithubRepoImpl) SaveRepo(context context.Context, repo model.GithubRepo) (model.GithubRepo, error) {
 	// name, description, url, color, lang, fork, stars, stars_today, build_by, created_at, updated_at
 	statement := `INSERT INTO repos(
-					name, description, url, color, lang, fork, stars, 
- 			        stars_today, build_by, created_at, updated_at) 
+					name, description, url, color, lang, fork, stars,
+ 			        stars_today, build_by, created_at, updated_at)
           		  VALUES(
-					:name,:description, :url, :color, :lang, :fork, :stars, 
+					:name,:description, :url, :color, :lang, :fork, :stars,
 					:stars_today, :build_by, :created_at, :updated_at
 				  )`
 
@@ -68,15 +69,15 @@ func (g GithubRepoImpl) SelectRepos(context context.Context, userId string, limi
 	var repos []model.GithubRepo
 	err := g.sql.Db.SelectContext(context, &repos,
 		`
-			SELECT 
-				repos.name, repos.description, repos.url, repos.color, repos.lang, 
-				repos.fork, repos.stars, repos.stars_today, repos.build_by, repos.updated_at, 
+			SELECT
+				repos.name, repos.description, repos.url, repos.color, repos.lang,
+				repos.fork, repos.stars, repos.stars_today, repos.build_by, repos.updated_at,
 				COALESCE(repos.name = bookmarks.repo_name, FALSE) as bookmarked
 			FROM repos
-			FULL OUTER JOIN bookmarks 
-			ON repos.name = bookmarks.repo_name AND 
-			   bookmarks.user_id=$1  
-			WHERE repos.name IS NOT NULL 
+			FULL OUTER JOIN bookmarks
+			ON repos.name = bookmarks.repo_name AND
+			   bookmarks.user_id=$1
+			WHERE repos.name IS NOT NULL
 			ORDER BY updated_at ASC LIMIT $2
 		`, userId, limit)
 
@@ -92,7 +93,7 @@ func (g GithubRepoImpl) UpdateRepo(context context.Context, repo model.GithubRep
 	// name, description, url, color, lang, fork, stars, stars_today, build_by, created_at, updated_at
 	sqlStatement := `
 		UPDATE repos
-		SET 
+		SET
 			stars  = :stars,
 			fork = :fork,
 			stars_today = :stars_today,
@@ -122,11 +123,11 @@ func (g GithubRepoImpl) UpdateRepo(context context.Context, repo model.GithubRep
 func (g GithubRepoImpl) SelectAllBookmarks(context context.Context, userId string) ([]model.GithubRepo, error) {
 	repos := []model.GithubRepo{}
 	err := g.sql.Db.SelectContext(context, &repos,
-		`SELECT 
-					repos.name, repos.description, repos.url, 
-					repos.color, repos.lang, repos.fork, repos.stars, 
+		`SELECT
+					repos.name, repos.description, repos.url,
+					repos.color, repos.lang, repos.fork, repos.stars,
 					repos.stars_today, repos.build_by, true as bookmarked
-				FROM bookmarks 
+				FROM bookmarks
 				INNER JOIN repos
 				ON bookmarks.user_id=$1 AND repos.name = bookmarks.repo_name`, userId)
 
@@ -142,7 +143,7 @@ func (g GithubRepoImpl) SelectAllBookmarks(context context.Context, userId strin
 
 func (g GithubRepoImpl) Bookmark(context context.Context, bid, nameRepo, userId string) error {
 	statement := `INSERT INTO bookmarks(
-					bid, user_id, repo_name, created_at, updated_at) 
+					bid, user_id, repo_name, created_at, updated_at)
           		  VALUES($1, $2, $3, $4, $5)`
 
 	now := time.Now()
