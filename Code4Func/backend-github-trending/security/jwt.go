@@ -2,8 +2,9 @@ package security
 
 import (
 	"backend-github-trending/model"
-	"github.com/dgrijalva/jwt-go"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 const JWT_KEY = "hhhgfdshgfhsdgfshjgfshjdgf"

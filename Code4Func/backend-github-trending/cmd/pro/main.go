@@ -9,10 +9,11 @@ import (
 	"backend-github-trending/repository/repo_impl"
 	"backend-github-trending/router"
 	"fmt"
-	"github.com/labstack/echo/v4"
-	"github.com/swaggo/echo-swagger"
 	"os"
 	"time"
+
+	"github.com/labstack/echo/v4"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func init() {

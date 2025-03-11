@@ -2,12 +2,13 @@ package log
 
 import (
 	"encoding/json"
-	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
 	"io"
 	"os"
 	"runtime"
 	"strings"
 	"time"
+
+	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"

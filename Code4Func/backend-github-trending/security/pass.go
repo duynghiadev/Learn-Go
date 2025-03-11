@@ -1,8 +1,9 @@
 package security
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"log"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // ref > https://medium.com/@jcox250/password-hash-salt-using-golang-b041dc94cb72
