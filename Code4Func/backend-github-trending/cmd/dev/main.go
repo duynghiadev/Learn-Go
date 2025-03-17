@@ -81,12 +81,9 @@ func main() {
 func scheduleUpdateTrending(timeSchedule time.Duration, handler handler.RepoHandler) {
 	ticker := time.NewTicker(timeSchedule)
 	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				fmt.Println("Checking from github...")
-				helper.CrawlRepo(handler.GithubRepo)
-			}
+		for range ticker.C {
+			fmt.Println("Checking from github...")
+			helper.CrawlRepo(handler.GithubRepo)
 		}
 	}()
 }
