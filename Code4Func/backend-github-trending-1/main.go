@@ -6,6 +6,7 @@ import (
 
 	"github.com/duynghiadev/backend-github-trending/db"
 	"github.com/duynghiadev/backend-github-trending/handler"
+	"github.com/duynghiadev/backend-github-trending/helper"
 	"github.com/duynghiadev/backend-github-trending/log"
 	"github.com/duynghiadev/backend-github-trending/repository/repo_impl"
 	"github.com/duynghiadev/backend-github-trending/router"
@@ -34,6 +35,11 @@ func main() {
 	e := echo.New()
 
 	e.Use(middleware.AddTrailingSlash())
+
+	structValidator := helper.NewStructValidator()
+	structValidator.RegisterValidate()
+
+	e.Validator = structValidator
 
 	userHandler := handler.UserHandler{
 		UserRepo: repo_impl.NewUserRepo(sql),
