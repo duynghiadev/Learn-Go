@@ -1,0 +1,1 @@
+time="2025-03-19T10:13:53.980516+07:00" level=error msg="code=400, message=Request body can't be empty" file=/Volumes/HDD-Coding/become-software-engineer/Backend/2-learn-and-project-golang/01-Learn-Go/Code4Func/backend-github-trending-1/handler/user_handler.go line=23
