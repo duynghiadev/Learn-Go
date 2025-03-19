@@ -16,5 +16,7 @@ func (api *API) SetupRouter() {
 
 	api.Echo.POST("/user/sign-up", api.UserHandler.HandleSignUp)
 
-	api.Echo.GET("/user/profile", api.UserHandler.Profile, middleware.JWTMiddleware())
+	user := api.Echo.Group("/user", middleware.JWTMiddleware())
+	user.GET("/profile", api.UserHandler.Profile)
+	user.PUT("/profile/update", api.UserHandler.UpdateProfile)
 }
