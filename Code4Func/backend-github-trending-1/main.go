@@ -1,12 +1,25 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/duynghiadev/backend-github-trending/db"
 	"github.com/duynghiadev/backend-github-trending/handler"
+	"github.com/duynghiadev/backend-github-trending/log"
+	"github.com/duynghiadev/backend-github-trending/repository/repo_impl"
+	"github.com/duynghiadev/backend-github-trending/router"
 	"github.com/labstack/echo"
 )
 
+func init() {
+	fmt.Println("init package main")
+	os.Setenv("APP_NAME", "github")
+	log.InitLogger(false)
+}
+
 func main() {
+	fmt.Println("main function")
 	sql := &db.Sql{
 		Host:     "localhost",
 		Port:     5432,
@@ -14,15 +27,20 @@ func main() {
 		Password: "duynghia123",
 		DbName:   "code4func",
 	}
-
 	sql.Connect()
 	defer sql.Close()
 
 	e := echo.New()
-	e.GET("/", handler.Welcome)
 
-	e.GET("/user/sign-in", handler.HandleSignIn)
-	e.GET("/user/sign-up", handler.HandleSignUp)
+	userHandler := handler.UserHandler{
+		UserRepo: repo_impl.NewUserRepo(sql),
+	}
 
-	e.Logger.Fatal(e.Start(":9999"))
+	api := router.API{
+		Echo:        e,
+		UserHandler: userHandler,
+	}
+	api.SetupRouter()
+
+	e.Logger.Fatal(e.Start(":3000"))
 }
