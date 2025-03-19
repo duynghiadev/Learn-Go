@@ -10,6 +10,7 @@ import (
 	"github.com/duynghiadev/backend-github-trending/repository/repo_impl"
 	"github.com/duynghiadev/backend-github-trending/router"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func init() {
@@ -32,6 +33,8 @@ func main() {
 
 	e := echo.New()
 
+	e.Use(middleware.AddTrailingSlash())
+
 	userHandler := handler.UserHandler{
 		UserRepo: repo_impl.NewUserRepo(sql),
 	}
@@ -42,5 +45,5 @@ func main() {
 	}
 	api.SetupRouter()
 
-	e.Logger.Fatal(e.Start(":3000"))
+	e.Logger.Fatal(e.Start(":3001"))
 }

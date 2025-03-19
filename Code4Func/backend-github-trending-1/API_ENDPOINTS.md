@@ -37,6 +37,7 @@ Base URL: `http://localhost:3000`
 - **Method**: `POST`
 - **Endpoint**: `/user/sign-in`
 - **Description**: Authenticate user and get access token
+- **Admin Check**: Required (Only admin@gmail.com can access)
 - **Request Body**:
   ```json
   {
@@ -56,6 +57,21 @@ Base URL: `http://localhost:3000`
     }
   }
   ```
+- **Error Response** (Non-admin):
+  ```json
+  {
+    "code": 400,
+    "message": "Bạn không không có quyền gọi api này !",
+    "data": null
+  }
+  ```
+
+## User Roles
+
+The application supports two user roles:
+
+1. **MEMBER**: Default role for regular users
+2. **ADMIN**: Special role with additional privileges
 
 ## Database Schema
 
@@ -109,7 +125,7 @@ CREATE TABLE "bookmarks" (
 
 The API may return the following error responses:
 
-- `400 Bad Request`: Invalid request body or validation errors
+- `400 Bad Request`: Invalid request body, validation errors, or insufficient permissions
 - `401 Unauthorized`: Invalid credentials
 - `403 Forbidden`: Insufficient permissions
 - `404 Not Found`: Resource not found
@@ -131,3 +147,4 @@ Authorization: Bearer <token>
 - Input validation using validator package
 - CORS enabled
 - SQL injection prevention using prepared statements
+- Admin role check middleware

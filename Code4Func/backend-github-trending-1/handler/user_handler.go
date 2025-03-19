@@ -117,6 +117,7 @@ func (u *UserHandler) HandleSignIn(c echo.Context) error {
 		})
 	}
 
+	user.Password = ""
 	return c.JSON(http.StatusOK, model.Response{
 		StatusCode: http.StatusOK,
 		Message:    "Xử lý thành công",
