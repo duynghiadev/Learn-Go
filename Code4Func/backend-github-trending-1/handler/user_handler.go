@@ -4,12 +4,12 @@ import (
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/duynghiadev/backend-github-trending/banana"
 	"github.com/duynghiadev/backend-github-trending/log"
 	"github.com/duynghiadev/backend-github-trending/model"
 	"github.com/duynghiadev/backend-github-trending/model/req"
 	"github.com/duynghiadev/backend-github-trending/repository"
 	"github.com/duynghiadev/backend-github-trending/security"
-	validator "github.com/go-playground/validator/v10"
 	uuid "github.com/google/uuid"
 	"github.com/labstack/echo"
 )
@@ -29,8 +29,7 @@ func (u *UserHandler) HandleSignUp(c echo.Context) error {
 		})
 	}
 
-	validate := validator.New()
-	if err := validate.Struct(req); err != nil {
+	if err := c.Validate(req); err != nil {
 		log.Error(err.Error())
 		return c.JSON(http.StatusBadRequest, model.Response{
 			StatusCode: http.StatusBadRequest,
@@ -99,8 +98,7 @@ func (u *UserHandler) HandleSignIn(c echo.Context) error {
 		})
 	}
 
-	validate := validator.New()
-	if err := validate.Struct(req); err != nil {
+	if err := c.Validate(req); err != nil {
 		log.Error(err.Error())
 		return c.JSON(http.StatusBadRequest, model.Response{
 			StatusCode: http.StatusBadRequest,
@@ -150,8 +148,26 @@ func (u *UserHandler) Profile(c echo.Context) error {
 	tokenData := c.Get("user").(*jwt.Token)
 	claims := tokenData.Claims.(*model.JwtCustomClaims)
 
-	return c.JSON(http.StatusOK, echo.Map{
-		"userId": claims.UserId,
-		"role":   claims.Role,
+	user, err := u.UserRepo.SelectUserById(c.Request().Context(), claims.UserId)
+	if err != nil {
+		if err == banana.UserNotFound {
+			return c.JSON(http.StatusNotFound, model.Response{
+				StatusCode: http.StatusNotFound,
+				Message:    err.Error(),
+				Data:       nil,
+			})
+		}
+
+		return c.JSON(http.StatusInternalServerError, model.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    err.Error(),
+			Data:       nil,
+		})
+	}
+
+	return c.JSON(http.StatusOK, model.Response{
+		StatusCode: http.StatusOK,
+		Message:    "Xử lý thành công",
+		Data:       user,
 	})
 }
