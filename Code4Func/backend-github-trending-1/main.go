@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/duynghiadev/backend-github-trending/db"
 	"github.com/duynghiadev/backend-github-trending/handler"
@@ -11,17 +12,14 @@ import (
 	"github.com/duynghiadev/backend-github-trending/repository/repo_impl"
 	"github.com/duynghiadev/backend-github-trending/router"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 )
 
 func init() {
-	fmt.Println("init package main")
 	os.Setenv("APP_NAME", "github")
 	log.InitLogger(false)
 }
 
 func main() {
-	fmt.Println("main function")
 	sql := &db.Sql{
 		Host:     "localhost",
 		Port:     5432,
@@ -34,8 +32,6 @@ func main() {
 
 	e := echo.New()
 
-	e.Use(middleware.AddTrailingSlash())
-
 	structValidator := helper.NewStructValidator()
 	structValidator.RegisterValidate()
 
@@ -45,11 +41,31 @@ func main() {
 		UserRepo: repo_impl.NewUserRepo(sql),
 	}
 
+	repoHandler := handler.RepoHandler{
+		GithubRepo: repo_impl.NewGithubRepo(sql),
+	}
+
 	api := router.API{
 		Echo:        e,
 		UserHandler: userHandler,
+		RepoHandler: repoHandler,
 	}
 	api.SetupRouter()
 
+	go scheduleUpdateTrending(15*time.Second, repoHandler)
+
 	e.Logger.Fatal(e.Start(":3001"))
+}
+
+func scheduleUpdateTrending(timeSchedule time.Duration, handler handler.RepoHandler) {
+	ticker := time.NewTicker(timeSchedule)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				fmt.Println("Checking from github...")
+				helper.CrawlRepo(handler.GithubRepo)
+			}
+		}
+	}()
 }

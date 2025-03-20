@@ -43,9 +43,9 @@ func main() {
 	sql := &db.Sql{
 		Host:     "localhost", //localhost,host.docker.internal
 		Port:     5432,
-		UserName: "ryan",
-		Password: "postgres",
-		DbName:   "golang",
+		UserName: "postgres",
+		Password: "duynghia123",
+		DbName:   "code4func",
 	}
 	sql.Connect()
 	defer sql.Close()
@@ -75,7 +75,7 @@ func main() {
 
 	go scheduleUpdateTrending(360*time.Second, repoHandler)
 
-	e.Logger.Fatal(e.Start(":3000"))
+	e.Logger.Fatal(e.Start(":3002"))
 }
 
 func scheduleUpdateTrending(timeSchedule time.Duration, handler handler.RepoHandler) {
