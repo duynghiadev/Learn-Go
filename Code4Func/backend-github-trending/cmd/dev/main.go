@@ -37,7 +37,7 @@ func init() {
 // @in header
 // @name Authorization
 
-// @host localhost:3000
+// @host localhost:3002
 // @BasePath /
 func main() {
 	sql := &db.Sql{
