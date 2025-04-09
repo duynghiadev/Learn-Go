@@ -1,0 +1,10 @@
+- **Browser** :
+  - Visit **http://localhost:8080/** (redirects to **/login** if not logged in).
+- **cURL/Postman** :
+- GET **/login**: curl http://localhost:8080/login
+- POST **/loginauth**: curl -X POST -d "username=test&password=test" http://localhost:8080/loginauth
+- GET **/logout**: curl http://localhost:8080/logout
+- GET **/register**: curl http://localhost:8080/register
+- POST **/registerauth**: curl -X POST -d "username=testuser&password=Test123!@#" http://localhost:8080/registerauth
+- GET **/about**: curl http://localhost:8080/about (requires login)
+- GET **/**: curl http://localhost:8080/ (requires login)

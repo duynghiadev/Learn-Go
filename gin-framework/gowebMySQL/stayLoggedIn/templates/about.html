@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Page</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 400px;
+      }
+      h2 {
+        color: #2c3e50;
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+      p {
+        color: #555;
+        font-size: 16px;
+      }
+      .message {
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #27ae60;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>About Page</h2>
+      <p>There isn't much to say about this very basic site.</p>
+
+      {{if .}}
+      <h4 class="message">{{.}}</h4>
+      {{end}}
+    </div>
+  </body>
+</html>
