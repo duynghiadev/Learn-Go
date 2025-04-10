@@ -1,0 +1,11 @@
+### Get all posts
+GET http://localhost:8081/posts
+
+### Add a post
+POST http://localhost:8081/posts
+Content-Type: application/json
+
+{
+  "title": "Second Post",
+  "text": "This is a test"
+}
