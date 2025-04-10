@@ -17,7 +17,6 @@ type repo struct {
 	client *firestore.Client
 }
 
-// NewPostRepository
 func NewPostRepository(client *firestore.Client) PostRepository {
 	return &repo{client: client}
 }
@@ -28,10 +27,8 @@ const (
 
 func (r *repo) Save(post *entity.Post) (*entity.Post, error) {
 	ctx := context.Background()
-
-	ref := r.client.Collection(collectionName).NewDoc() // Generate a unique ID
-
-	post.ID = ref.ID // Set the ID of the post to the generated ID
+	ref := r.client.Collection(collectionName).NewDoc()
+	post.ID = ref.ID
 
 	_, err := ref.Set(ctx, map[string]interface{}{
 		"ID":    post.ID,
@@ -43,8 +40,7 @@ func (r *repo) Save(post *entity.Post) (*entity.Post, error) {
 		log.Printf("Failed adding a new post: %v", err)
 		return nil, err
 	}
-
-	return post, nil // Return the post with the Firestore-generated ID
+	return post, nil
 }
 
 func (r *repo) FindAll() ([]entity.Post, error) {
@@ -58,21 +54,19 @@ func (r *repo) FindAll() ([]entity.Post, error) {
 		doc, err := iterator.Next()
 		if err != nil {
 			log.Printf("Failed to iterate the list of posts: %v", err)
-			break // Exit loop if there's an error or end of data
+			break
 		}
 
 		if doc == nil {
-			break // No more documents
+			break
 		}
 
 		var post entity.Post
 		if err := doc.DataTo(&post); err != nil {
 			log.Printf("Failed to convert document to Post: %v", err)
-			continue // Skip this document and continue to the next
+			continue
 		}
-
 		posts = append(posts, post)
 	}
-
 	return posts, nil
 }
