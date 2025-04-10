@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"encoding/json"
@@ -11,16 +11,14 @@ type Post struct {
 	Text  string `json:"text"`
 }
 
-var (
-	posts []Post
-)
+var posts []Post
 
 func init() {
 	posts = []Post{{Id: 1, Title: "Title 1", Text: "Text 1"}}
 }
 
-func getPosts(resp http.ResponseWriter, req *http.Request) {
-	resp.Header().Set("Content-type", "application/json")
+func GetPosts(resp http.ResponseWriter, req *http.Request) {
+	resp.Header().Set("Content-Type", "application/json")
 	result, err := json.Marshal(posts)
 	if err != nil {
 		resp.WriteHeader(http.StatusInternalServerError)
