@@ -51,8 +51,8 @@
 - **URL** : `/projects`
 - **Method** : `POST`
 - **Headers** :
-- `Authorization: Bearer <token>`
-- `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+  - `Content-Type: application/json`
 
 #### Request Body:
 
@@ -67,21 +67,21 @@
 - **URL** : `/projects/{id}`
 - **Method** : `GET`
 - **Headers** :
-- `Authorization: Bearer <token>`
+  - `Authorization: Bearer <token>`
 
 ### Get All Projects
 
 - **URL** : `/projects`
 - **Method** : `GET`
 - **Headers** :
-- `Authorization: Bearer <token>`
+  - `Authorization: Bearer <token>`
 
 ### Delete Project
 
 - **URL** : `/projects/{id}`
 - **Method** : `DELETE`
 - **Headers** :
-- `Authorization: Bearer <token>`
+  - `Authorization: Bearer <token>`
 
 ---
 
@@ -94,8 +94,8 @@
 - **URL** : `/tasks`
 - **Method** : `POST`
 - **Headers** :
-- `Authorization: Bearer <token>`
-- `Content-Type: application/json`
+  - `Authorization: Bearer <token>`
+  - `Content-Type: application/json`
 
 #### Request Body:
 
@@ -113,7 +113,7 @@
 - **URL** : `/tasks/{id}`
 - **Method** : `GET`
 - **Headers** :
-- `Authorization: Bearer <token>`
+  - `Authorization: Bearer <token>`
 
 ---
 
@@ -122,7 +122,7 @@
 - **URL** : `/tasks`
 - **Method** : `GET`
 - **Headers** :
-- `Authorization: Bearer <token>`
+  - `Authorization: Bearer <token>`
 
 ---
 
