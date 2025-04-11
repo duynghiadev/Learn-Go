@@ -1,314 +1,133 @@
-# 📘 REST API Documentation
+# 📘 API Documentation
 
-## 🔗 Base URL
-
-```
-http://localhost:8080
-```
+**Base URL**: `http://localhost:8080/api/v1`
 
 ---
 
 ## 🔐 Authentication
 
-- **Bearer Token** authentication is required for protected endpoints.
-- Token can be obtained from the **Login** endpoint.
-- Add token in:
-  - **Authorization Header**: `Bearer <token>`
-  - **Query Parameter**: `?token=<token>`
+### Register User
 
----
+- **URL**: `/users/register`
+- **Method**: `POST`
+- **Content-Type**: `application/json`
 
-## 📌 Endpoints
-
-### 🧍 Authentication
-
-subrouter: `/api/v1`
-
-#### ✅ Register User
-
-**POST** `/users/register`
-**Request Body (JSON):**
+#### Request Body:
 
 ```json
 {
-  "email": "user@example.com",
+  "email": "test8@gmail.com",
   "firstName": "John",
   "lastName": "Doe",
-  "password": "yourpassword"
+  "password": "123456"
 }
 ```
 
-**Response:**
+---
+
+### Login
+
+- **URL** : `/users/login`
+- **Method** : `POST`
+- **Content-Type** : `application/json`
+
+#### Request Body:
 
 ```json
 {
-  "id": 1,
-  "email": "user@example.com",
-  "firstName": "John",
-  "lastName": "Doe",
-  "createdAt": "2024-01-20T10:00:00Z"
+  "email": "test8@gmail.com",
+  "password": "123456"
 }
 ```
 
 ---
 
-#### 🔑 Login
+## 📁 Projects
 
-**POST** `/login`
-**Request Body (JSON):**
+> All project-related routes require an `Authorization` header with a valid Bearer token.
+
+### Create Project
+
+- **URL** : `/projects`
+- **Method** : `POST`
+- **Headers** :
+- `Authorization: Bearer <token>`
+- `Content-Type: application/json`
+
+#### Request Body:
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "yourpassword"
+  "name": "My New Project 3"
 }
 ```
 
-**Response:**
+### Get Project by ID
+
+- **URL** : `/projects/{id}`
+- **Method** : `GET`
+- **Headers** :
+- `Authorization: Bearer <token>`
+
+### Get All Projects
+
+- **URL** : `/projects`
+- **Method** : `GET`
+- **Headers** :
+- `Authorization: Bearer <token>`
+
+### Delete Project
+
+- **URL** : `/projects/{id}`
+- **Method** : `DELETE`
+- **Headers** :
+- `Authorization: Bearer <token>`
+
+---
+
+## ✅ Tasks
+
+> All task-related routes require an `Authorization` header with a valid Bearer token.
+
+### Create Task
+
+- **URL** : `/tasks`
+- **Method** : `POST`
+- **Headers** :
+- `Authorization: Bearer <token>`
+- `Content-Type: application/json`
+
+#### Request Body:
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIs..."
+  "name": "Implement Task API",
+  "status": "TODO", // Options: TODO, IN_PROGRESS, IN_TESTING, DONE
+  "projectID": 7,
+  "assignedTo": 7
 }
 ```
 
----
+### Get Task by ID
 
-### 📂 Projects
-
-#### ➕ Create Project
-
-**POST** `/projects`
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Request Body (JSON):**
-
-```json
-{
-  "name": "My New Project"
-}
-```
-
-**Response:**
-
-```json
-{
-  "id": 1,
-  "name": "My New Project",
-  "createdAt": "2024-01-20T10:00:00Z"
-}
-```
+- **URL** : `/tasks/{id}`
+- **Method** : `GET`
+- **Headers** :
+- `Authorization: Bearer <token>`
 
 ---
 
-#### 📄 Get All Projects
+### Get All Tasks
 
-**GET** `/projects`
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-
-```json
-[
-  {
-    "id": 1,
-    "name": "My New Project",
-    "createdAt": "2024-01-20T10:00:00Z"
-  }
-]
-```
+- **URL** : `/tasks`
+- **Method** : `GET`
+- **Headers** :
+- `Authorization: Bearer <token>`
 
 ---
 
-#### 📄 Get Project by ID
+## 🧪 Notes
 
-**GET** `/projects/{id}`
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-
-```json
-{
-  "id": 1,
-  "name": "My New Project",
-  "createdAt": "2024-01-20T10:00:00Z"
-}
-```
-
----
-
-### ✅ Tasks
-
-#### ➕ Create Task
-
-**POST** `/projects/{projectId}/tasks`
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Request Body (JSON):**
-
-```json
-{
-  "name": "New Task",
-  "assignedToId": 1,
-  "status": "TODO"
-}
-```
-
-**Response:**
-
-```json
-{
-  "id": 1,
-  "name": "New Task",
-  "status": "TODO",
-  "projectId": 1,
-  "assignedToId": 1,
-  "createdAt": "2024-01-20T10:00:00Z"
-}
-```
-
----
-
-#### 📄 Get Project Tasks
-
-**GET** `/projects/{projectId}/tasks`
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-
-```json
-[
-  {
-    "id": 1,
-    "name": "New Task",
-    "status": "TODO",
-    "projectId": 1,
-    "assignedToId": 1,
-    "createdAt": "2024-01-20T10:00:00Z"
-  }
-]
-```
-
----
-
-#### 🔄 Update Task Status
-
-**PUT** `/projects/{projectId}/tasks/{taskId}`
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Request Body (JSON):**
-
-```json
-{
-  "status": "IN_PROGRESS"
-}
-```
-
-**Response:**
-
-```json
-{
-  "id": 1,
-  "name": "New Task",
-  "status": "IN_PROGRESS",
-  "projectId": 1,
-  "assignedToId": 1,
-  "createdAt": "2024-01-20T10:00:00Z"
-}
-```
-
----
-
-## ⚠️ Status Codes
-
-- `200` OK: Success
-- `201` Created
-- `400` Bad Request
-- `401` Unauthorized
-- `404` Not Found
-- `500` Internal Server Error
-
----
-
-## 🏷️ Task Status Values
-
-- `TODO`
-- `IN_PROGRESS`
-- `IN_TESTING`
-- `DONE`
-
----
-
-## 🧪 Postman Collection Setup
-
-### 📁 Create a Collection in Postman
-
-#### 🔧 Set Environment Variables:
-
-| Key        | Value                        |
-| ---------- | ---------------------------- |
-| `BASE_URL` | `http://localhost:8080`      |
-| `TOKEN`    | Your JWT token from `/login` |
-
----
-
-### 📂 Create the Following Requests
-
-#### **Authentication Folder**
-
-- **Register**: `POST {{BASE_URL}}/register`
-- **Login**: `POST {{BASE_URL}}/login`
-
-#### **Projects Folder**
-
-- **Create Project**: `POST {{BASE_URL}}/projects`
-- **Get All Projects**: `GET {{BASE_URL}}/projects`
-- **Get Project by ID**: `GET {{BASE_URL}}/projects/{{project_id}}`
-
-#### **Tasks Folder**
-
-- **Create Task**: `POST {{BASE_URL}}/projects/{{project_id}}/tasks`
-- **Get Tasks**: `GET {{BASE_URL}}/projects/{{project_id}}/tasks`
-- **Update Task**: `PUT {{BASE_URL}}/projects/{{project_id}}/tasks/{{task_id}}`
-
----
-
-### 🔐 Setup Authorization in Postman
-
-- Go to **Collection Settings → Authorization**
-- Choose **Bearer Token**
-- Set Token: `{{TOKEN}}`
-
----
-
-### ✅ Test Flow
-
-1. Register a new user
-2. Login and save the token
-3. Create a project
-4. Create tasks
-5. Update task status
+- Replace `<token>` with a valid JWT access token retrieved from the login endpoint.
+- All protected endpoints require the `Authorization` header.
+- You can test these APIs using Postman, Insomnia, or REST Client in VS Code (`.http` files).
