@@ -4,12 +4,12 @@ Simple REST API with Go with minimal dependencies. Perfect starting point for a 
 
 ## Project
 
-The API is divided into smaller services that are responsible for a specific part of the application. 
+The API is divided into smaller services that are responsible for a specific part of the application.
 Each service is the main package to not be opinionated about the project structure.
 
-Example: 
+Example:
+
 ```
-.
 users.go      // Service for users
 users_test.go // Tests for the users service
 ```
@@ -19,7 +19,7 @@ users_test.go // Tests for the users service
 To run the project, you need to have Go installed. Then, you can run the following command:
 
 ```bash
-make run 
+make run
 // or Docker
 ```
 
