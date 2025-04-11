@@ -80,3 +80,65 @@ func TestCreateTask(t *testing.T) {
 		}
 	})
 }
+
+func TestGetTask(t *testing.T) {
+	ms := &MockStore{}
+	service := NewTasksService(ms)
+
+	t.Run("should get a task by ID", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, "/tasks/1", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rr := httptest.NewRecorder()
+		router := mux.NewRouter()
+		router.HandleFunc("/tasks/{id}", service.handleGetTask)
+
+		router.ServeHTTP(rr, req)
+
+		if rr.Code != http.StatusOK {
+			t.Errorf("expected status code %d, got %d", http.StatusOK, rr.Code)
+		}
+
+		var task Task
+		if err := json.NewDecoder(rr.Body).Decode(&task); err != nil {
+			t.Fatal("could not decode task response")
+		}
+
+		if task.ID != 1 {
+			t.Errorf("expected task ID %d, got %d", 1, task.ID)
+		}
+	})
+}
+
+func TestGetAllTasks(t *testing.T) {
+	ms := &MockStore{}
+	service := NewTasksService(ms)
+
+	t.Run("should return all tasks", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, "/tasks", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rr := httptest.NewRecorder()
+		router := mux.NewRouter()
+		router.HandleFunc("/tasks", service.handleGetAllTasks)
+
+		router.ServeHTTP(rr, req)
+
+		if rr.Code != http.StatusOK {
+			t.Errorf("expected status code %d, got %d", http.StatusOK, rr.Code)
+		}
+
+		var tasks []*Task
+		if err := json.NewDecoder(rr.Body).Decode(&tasks); err != nil {
+			t.Fatal("could not decode tasks response")
+		}
+
+		if len(tasks) != 2 {
+			t.Errorf("expected 2 tasks, got %d", len(tasks))
+		}
+	})
+}

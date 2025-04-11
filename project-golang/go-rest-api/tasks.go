@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -23,6 +24,7 @@ func NewTasksService(s Store) *TasksService {
 
 func (s *TasksService) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/tasks", WithJWTAuth(s.handleCreateTask, s.store)).Methods("POST")
+	r.HandleFunc("/tasks", WithJWTAuth(s.handleGetAllTasks, s.store)).Methods("GET")
 	r.HandleFunc("/tasks/{id}", WithJWTAuth(s.handleGetTask, s.store)).Methods("GET")
 }
 
@@ -42,13 +44,14 @@ func (s *TasksService) handleCreateTask(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if err := validateTaskPayload(task); err != nil {
+	if err = validateTaskPayload(task); err != nil {
 		WriteJSON(w, http.StatusBadRequest, ErrorResponse{Error: err.Error()})
 		return
 	}
 
 	t, err := s.store.CreateTask(task)
 	if err != nil {
+		log.Printf("Error creating task: %v", err)
 		WriteJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Error creating task"})
 		return
 	}
@@ -57,7 +60,31 @@ func (s *TasksService) handleCreateTask(w http.ResponseWriter, r *http.Request) 
 }
 
 func (s *TasksService) handleGetTask(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 
+	if id == "" {
+		WriteJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Task ID is required"})
+		return
+	}
+
+	task, err := s.store.GetTask(id)
+	if err != nil {
+		WriteJSON(w, http.StatusNotFound, ErrorResponse{Error: "Task not found"})
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, task)
+}
+
+func (s *TasksService) handleGetAllTasks(w http.ResponseWriter, r *http.Request) {
+	tasks, err := s.store.GetAllTasks()
+	if err != nil {
+		WriteJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Error fetching tasks"})
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, tasks)
 }
 
 func validateTaskPayload(task *Task) error {

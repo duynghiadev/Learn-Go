@@ -10,13 +10,17 @@ type Store interface {
 	// Users
 	CreateUser(u *User) (*User, error)
 	GetUserByID(id string) (*User, error)
+
 	// Projects
 	CreateProject(p *Project) error
 	GetProject(id string) (*Project, error)
 	DeleteProject(id string) error
+	GetAllProjects() ([]*Project, error)
+
 	// Tasks
 	CreateTask(t *Task) (*Task, error)
 	GetTask(id string) (*Task, error)
+	GetAllTasks() ([]*Task, error)
 }
 
 func NewStore(db *sql.DB) *Storage {
@@ -28,6 +32,26 @@ func NewStore(db *sql.DB) *Storage {
 func (s *Storage) CreateProject(p *Project) error {
 	_, err := s.db.Exec("INSERT INTO projects (name) VALUES (?)", p.Name)
 	return err
+}
+
+func (s *Storage) GetAllProjects() ([]*Project, error) {
+	rows, err := s.db.Query("SELECT id, name FROM projects")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var projects []*Project
+	for rows.Next() {
+		project := new(Project)
+		err := rows.Scan(&project.ID, &project.Name)
+		if err != nil {
+			return nil, err
+		}
+		projects = append(projects, project)
+	}
+
+	return projects, nil
 }
 
 func (s *Storage) GetProject(id string) (*Project, error) {
@@ -67,7 +91,7 @@ func (s *Storage) GetUserByID(id string) (*User, error) {
 }
 
 func (s *Storage) CreateTask(t *Task) (*Task, error) {
-	rows, err := s.db.Exec("INSERT INTO tasks (name, status, project_id, assigned_to) VALUES (?, ?, ?, ?)", t.Name, t.Status, t.ProjectID, t.AssignedToID)
+	rows, err := s.db.Exec("INSERT INTO tasks (name, status, projectId, AssignedToID) VALUES (?, ?, ?, ?)", t.Name, t.Status, t.ProjectID, t.AssignedToID)
 
 	if err != nil {
 		return nil, err
@@ -84,6 +108,25 @@ func (s *Storage) CreateTask(t *Task) (*Task, error) {
 
 func (s *Storage) GetTask(id string) (*Task, error) {
 	var t Task
-	err := s.db.QueryRow("SELECT id, name, status, project_id, assigned_to, createdAt FROM tasks WHERE id = ?", id).Scan(&t.ID, &t.Name, &t.Status, &t.ProjectID, &t.AssignedToID, &t.CreatedAt)
+	err := s.db.QueryRow("SELECT id, name, status, projectId, AssignedToID, createdAt FROM tasks WHERE id = ?", id).Scan(&t.ID, &t.Name, &t.Status, &t.ProjectID, &t.AssignedToID, &t.CreatedAt)
 	return &t, err
+}
+
+func (s *Storage) GetAllTasks() ([]*Task, error) {
+	rows, err := s.db.Query("SELECT id, name, status, projectId, AssignedToID, createdAt FROM tasks")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var tasks []*Task
+	for rows.Next() {
+		var t Task
+		if err := rows.Scan(&t.ID, &t.Name, &t.Status, &t.ProjectID, &t.AssignedToID, &t.CreatedAt); err != nil {
+			return nil, err
+		}
+		tasks = append(tasks, &t)
+	}
+
+	return tasks, nil
 }

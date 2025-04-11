@@ -37,10 +37,38 @@ Content-Type: application/json
 GET http://localhost:8080/api/v1/projects/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3NTQ3MjU2ODYsInVzZXJJRCI6IjExIn0.bWn4XsMWii9isxLCEC8BnuSUEoSKwRzOdpf8siBEvQ4
 
+### Get All Project
+GET http://localhost:8080/api/v1/projects
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3NTQ3MjU2ODYsInVzZXJJRCI6IjExIn0.bWn4XsMWii9isxLCEC8BnuSUEoSKwRzOdpf8siBEvQ4
+
 ###
 
 ### Delete Project
 DELETE http://localhost:8080/api/v1/projects/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3NTQ3MjQ4ODksInVzZXJJRCI6IjcifQ.B8VwwN8BRLE4ojOlcAVv6fW06TxhbfPB2yBNMIlpM0c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3NTQ3MjU2ODYsInVzZXJJRCI6IjExIn0.bWn4XsMWii9isxLCEC8BnuSUEoSKwRzOdpf8siBEvQ4
 
 ###
+
+### Create Task
+// 'TODO', 'IN_PROGRESS', 'IN_TESTING', 'DONE'
+POST http://localhost:8080/api/v1/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3NTQ3MjU2ODYsInVzZXJJRCI6IjExIn0.bWn4XsMWii9isxLCEC8BnuSUEoSKwRzOdpf8siBEvQ4
+
+{
+  "name": "Implement Task API",
+  "status": "TODO",
+  "projectID": 7,
+  "assignedTo": 7
+}
+
+###
+
+### Get Task by ID
+GET http://localhost:8080/api/v1/tasks/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3NTQ3MjU2ODYsInVzZXJJRCI6IjExIn0.bWn4XsMWii9isxLCEC8BnuSUEoSKwRzOdpf8siBEvQ4
+
+### Get All Tasks
+GET http://localhost:8080/api/v1/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3NTQ3MjU2ODYsInVzZXJJRCI6IjExIn0.bWn4XsMWii9isxLCEC8BnuSUEoSKwRzOdpf8siBEvQ4
+

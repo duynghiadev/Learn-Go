@@ -137,3 +137,41 @@ func TestDeleteProject(t *testing.T) {
 		}
 	})
 }
+
+func TestGetAllProjects(t *testing.T) {
+	// Setup
+	ms := &MockStore{}
+	service := NewProjectService(ms)
+
+	t.Run("should return all projects", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, "/projects", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rr := httptest.NewRecorder()
+		router := mux.NewRouter()
+
+		router.HandleFunc("/projects", service.handleGetAllProjects)
+
+		router.ServeHTTP(rr, req)
+
+		if rr.Code != http.StatusOK {
+			t.Errorf("expected status code %d, got %d", http.StatusOK, rr.Code)
+		}
+
+		var projects []*Project
+		err = json.NewDecoder(rr.Body).Decode(&projects)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if len(projects) != 2 {
+			t.Errorf("expected 2 projects, got %d", len(projects))
+		}
+
+		if projects[0].Name != "Test Project 1" || projects[1].Name != "Test Project 2" {
+			t.Errorf("unexpected project names: %+v", projects)
+		}
+	})
+}
