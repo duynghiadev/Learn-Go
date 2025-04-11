@@ -1,8 +1,6 @@
 ## E-commerce REST API in Go
 
-Reference: ([Link Github](https://github.com/sikozonpc/ecom#))
-
-### https://github.com/sikozonpc/ecom#Installation
+👉 Reference: ([Link Github](https://github.com/sikozonpc/ecom#))
 
 There are a few tools that you need to install to run the project.
 So make sure you have the following tools installed on your machine.
