@@ -43,8 +43,8 @@ func (s *UserService) handleUserRegister(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if err := validateUserPayload(payload); err != nil {
-		WriteJSON(w, http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+	if validationErr := validateUserPayload(payload); validationErr != nil {
+		WriteJSON(w, http.StatusBadRequest, ErrorResponse{Error: validationErr.Error()})
 		return
 	}
 
