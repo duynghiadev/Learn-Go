@@ -50,6 +50,17 @@ func (s *MockStore) GetUserByID(id string) (*User, error) {
 	}, nil
 }
 
+func (s *MockStore) GetUserByEmail(email string) (*User, error) {
+	hashedPassword, _ := HashPassword("123456")
+	return &User{
+		ID:        1,
+		Email:     "test@example.com",
+		FirstName: "Test",
+		LastName:  "User",
+		Password:  hashedPassword,
+	}, nil
+}
+
 func (s *MockStore) CreateTask(t *Task) (*Task, error) {
 	return &Task{
 		ID:           1,

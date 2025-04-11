@@ -67,6 +67,10 @@ func HashPassword(password string) (string, error) {
 	return string(hash), nil
 }
 
+func CheckPasswordHash(plainPassword, hashedPassword string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword))
+}
+
 func validateJWT(tokenString string) (*jwt.Token, error) {
 	secret := os.Getenv("JWT_SECRET")
 
