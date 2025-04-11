@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -14,7 +17,16 @@ type Config struct {
 	JWTSecret  string
 }
 
-var Envs = initConfig()
+var Envs Config
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Warning: .env file not found, using default or system environment variables")
+	}
+
+	Envs = initConfig()
+}
 
 func initConfig() Config {
 	return Config{

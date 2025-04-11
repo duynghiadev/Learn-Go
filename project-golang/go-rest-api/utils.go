@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 type ErrorResponse struct {
@@ -20,6 +21,9 @@ func GetTokenFromRequest(r *http.Request) string {
 	tokenQuery := r.URL.Query().Get("token")
 
 	if tokenAuth != "" {
+		if strings.HasPrefix(tokenAuth, "Bearer ") {
+			return strings.TrimPrefix(tokenAuth, "Bearer ")
+		}
 		return tokenAuth
 	}
 
