@@ -16,27 +16,21 @@ import (
 )
 
 func main() {
-	// Load .env file
 	if err := godotenv.Load(); err != nil {
 		log.Printf("Warning: .env file not found")
 	}
 
-	// --- Configuration ---
 	projectID := "pragmatic-reviews-433b7"
 	credentialsPath := "pragmatic-reviews.json"
 	serverPort := ":8081"
 
-	// Add Redis configuration
 	redisHost := os.Getenv("REDIS_HOST")
 	redisPort := os.Getenv("REDIS_PORT")
 	redisPassword := os.Getenv("REDIS_PASSWORD")
 
-	// --- Initialization Context ---
-	// Use a background context for setup, potentially with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	// Initialize Redis
 	log.Println("Main: Initializing Redis...")
 	redisClient, err := datastore.InitRedis(ctx, redisHost, redisPort, redisPassword)
 	if err != nil {
@@ -45,40 +39,25 @@ func main() {
 	}
 	defer redisClient.Close()
 
-	// --- Infrastructure Initialization ---
 	log.Println("Main: Initializing Firestore...")
 	firestoreClient, err := datastore.InitFirestore(ctx, projectID, credentialsPath)
 	if err != nil {
 		log.Fatalf("Main: Failed to initialize Firestore: %v", err)
 		os.Exit(1)
 	}
-	// defer firestoreClient.Close() // Can cause issues if context used for init is cancelled early
-
-	// --- Dependency Injection (Wiring the Layers) ---
 	log.Println("Main: Wiring application layers...")
 
-	// 1. Repository Layer (Concrete Implementation)
-	// We need the Firestore implementation which satisfies the usecase.repository.PostRepository interface.
 	postRepo := firestoreRepo.NewFirestorePostRepository(firestoreClient, redisClient)
-
-	// 2. Use Case Layer (Concrete Implementation - Interactor)
-	// The interactor needs a PostRepository interface, we provide the Firestore implementation.
 	postUseCase := usecase.NewPostInteractor(postRepo)
-
-	// 3. Interface Adapter Layer (HTTP Handler)
-	// The handler needs a PostUseCase interface, we provide the interactor implementation.
 	postHandler := handler.NewPostHandler(postUseCase)
 
-	// 4. Router (Infrastructure)
-	// The router needs the concrete handlers to map routes.
 	router := infraRouter.NewRouter(postHandler)
 
-	// --- Start Server ---
 	log.Printf("Main: Starting HTTP server on port %s", serverPort)
 	server := &http.Server{
 		Addr:    serverPort,
 		Handler: router,
-		// Add timeouts for production readiness
+
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
