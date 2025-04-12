@@ -1,3 +1,22 @@
+# 🚀 Register Redis Database
+
+![1744431528128](image/redis-cache/1744431528128.png)
+
+## 🔧 Project Configuration Steps
+
+- 📝 Copy Public endpoint: `redis-13416.c295.ap-southeast-1-1.ec2.redns.redis-cloud.com:13416` (remove port 13416 at the end) because we'll create a port variable and add that port (13416) later
+- 💻 Add that endpoint to the `redisHost` variable in `main.go`
+- 🔌 Create `redisPort` variable and add that port (13416)
+- 🔑 Create variable `redisPassword` to store Redis database password
+
+  - How to get the project password:
+    - Click "Connect" in your Redis project -> Select "Redis Client" -> Choose your programming language (Golang) -> Find the "Password" key -> Copy that value and paste it into your code
+      ![1744432055816](image/redis-cache/1744432055816.png)
+
+- ⚙️ Here's the configuration in our project (`main.go`)
+
+  ![1744431859371](image/redis-cache/1744431859371.png)
+
 # Redis Cache Setup and Usage
 
 This document explains how Redis caching is used in this project and how to interact with Redis using the Redis CLI.

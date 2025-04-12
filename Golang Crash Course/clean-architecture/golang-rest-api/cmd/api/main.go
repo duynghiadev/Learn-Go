@@ -11,18 +11,25 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Warning: .env file not found")
+	}
+
 	// --- Configuration ---
 	projectID := "pragmatic-reviews-433b7"
 	credentialsPath := "pragmatic-reviews.json"
 	serverPort := ":8081"
 
 	// Add Redis configuration
-	redisHost := "localhost"
-	redisPort := "6379"
-	redisPassword := "" // Set your password if needed
+	redisHost := os.Getenv("REDIS_HOST")
+	redisPort := os.Getenv("REDIS_PORT")
+	redisPassword := os.Getenv("REDIS_PASSWORD")
 
 	// --- Initialization Context ---
 	// Use a background context for setup, potentially with a timeout
