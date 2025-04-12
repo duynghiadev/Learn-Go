@@ -6,4 +6,5 @@ Go/Golang Crash Course Pragmatic Reviews
 
 ---
 
-In this source code, sections related to Redis or AWS require additional configuration before running.
+- In this source code, sections related to Redis or AWS require additional configuration before running.
+- This source code read only
