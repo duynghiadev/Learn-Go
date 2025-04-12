@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/kuma-coffee/go-crash-course/connecting-rest-api-with-aws/cache"
 	"github.com/kuma-coffee/go-crash-course/connecting-rest-api-with-aws/controller"
 	router "github.com/kuma-coffee/go-crash-course/connecting-rest-api-with-aws/http"
@@ -16,6 +17,10 @@ import (
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Warning: .env file not found")
+	}
+
 	db, err := sql.Open("sqlite3", "users.db")
 	if err != nil {
 		log.Println(err)
