@@ -48,10 +48,14 @@ func (r *firestorePostRepository) FindAll(ctx context.Context) ([]domain.Post, e
 	cachedPosts, err := r.redis.Get(ctx, cacheKey).Result()
 	if err == nil {
 		var posts []domain.Post
-		if err := json.Unmarshal([]byte(cachedPosts), &posts); err == nil {
+		if err = json.Unmarshal([]byte(cachedPosts), &posts); err != nil {
+			log.Printf("Firestore Repo: Failed to unmarshal cached posts: %v", err)
+		} else {
 			log.Printf("Firestore Repo: Retrieved %d posts from cache", len(posts))
 			return posts, nil
 		}
+	} else if err != redis.Nil {
+		log.Printf("Firestore Repo: Failed to get posts from Redis: %v", err)
 	}
 
 	// If not in cache, get from Firestore
@@ -86,7 +90,12 @@ func (r *firestorePostRepository) FindAll(ctx context.Context) ([]domain.Post, e
 	if len(posts) > 0 {
 		postsJSON, err := json.Marshal(posts)
 		if err == nil {
-			r.redis.Set(ctx, cacheKey, postsJSON, 5*time.Minute)
+			err = r.redis.Set(ctx, cacheKey, postsJSON, 5*time.Minute).Err()
+			if err != nil {
+				log.Printf("Firestore Repo: Failed to cache posts in Redis: %v", err)
+			}
+		} else {
+			log.Printf("Firestore Repo: Failed to marshal posts for caching: %v", err)
 		}
 	}
 

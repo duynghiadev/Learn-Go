@@ -52,7 +52,7 @@ func main() {
 
 	// 1. Repository Layer (Concrete Implementation)
 	// We need the Firestore implementation which satisfies the usecase.repository.PostRepository interface.
-	postRepo := firestoreRepo.NewFirestorePostRepository(firestoreClient)
+	postRepo := firestoreRepo.NewFirestorePostRepository(firestoreClient, redisClient)
 
 	// 2. Use Case Layer (Concrete Implementation - Interactor)
 	// The interactor needs a PostRepository interface, we provide the Firestore implementation.

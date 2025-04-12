@@ -6,7 +6,7 @@ POST http://localhost:8081/api/v1/posts
 Content-Type: application/json
 
 {
-  "title": "Second Post",
+  "title": "test Post",
   "text": "This is a test"
 }
 
