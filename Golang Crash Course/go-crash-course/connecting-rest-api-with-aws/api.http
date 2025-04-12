@@ -1,0 +1,21 @@
+### Get all posts
+GET http://localhost:8080/posts
+
+### Add a post
+POST http://localhost:8080/posts
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "test Post",
+  "text": "This is a test"
+}
+
+### Add a post
+POST http://localhost:8080/posts
+Content-Type: application/json
+
+{
+  "title": "My New Awesome Post",
+  "text": "This is the content of my new post. It's going to be great!"
+}
