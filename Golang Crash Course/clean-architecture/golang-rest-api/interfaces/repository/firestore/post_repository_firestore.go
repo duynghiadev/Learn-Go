@@ -90,7 +90,7 @@ func (r *firestorePostRepository) FindAll(ctx context.Context) ([]domain.Post, e
 	if len(posts) > 0 {
 		postsJSON, err := json.Marshal(posts)
 		if err == nil {
-			err = r.redis.Set(ctx, cacheKey, postsJSON, 5*time.Minute).Err()
+			err = r.redis.Set(ctx, cacheKey, postsJSON, 5000*time.Minute).Err()
 			if err != nil {
 				log.Printf("Firestore Repo: Failed to cache posts in Redis: %v", err)
 			}
