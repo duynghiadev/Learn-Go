@@ -2,11 +2,14 @@ package firestore
 
 import (
 	"context"
+	"encoding/json"
 	"golang-clean-architecture/domain"
 	repo "golang-clean-architecture/usecase/repository"
 	"log"
+	"time"
 
 	"cloud.google.com/go/firestore"
+	"github.com/redis/go-redis/v9"
 	"google.golang.org/api/iterator"
 )
 
@@ -16,11 +19,13 @@ const (
 
 type firestorePostRepository struct {
 	client *firestore.Client
+	redis  *redis.Client
 }
 
-func NewFirestorePostRepository(client *firestore.Client) repo.PostRepository {
+func NewFirestorePostRepository(client *firestore.Client, redis *redis.Client) repo.PostRepository {
 	return &firestorePostRepository{
 		client: client,
+		redis:  redis,
 	}
 }
 
@@ -38,6 +43,18 @@ func (r *firestorePostRepository) Save(ctx context.Context, post *domain.Post) (
 }
 
 func (r *firestorePostRepository) FindAll(ctx context.Context) ([]domain.Post, error) {
+	// Try to get from Redis first
+	cacheKey := "all_posts"
+	cachedPosts, err := r.redis.Get(ctx, cacheKey).Result()
+	if err == nil {
+		var posts []domain.Post
+		if err := json.Unmarshal([]byte(cachedPosts), &posts); err == nil {
+			log.Printf("Firestore Repo: Retrieved %d posts from cache", len(posts))
+			return posts, nil
+		}
+	}
+
+	// If not in cache, get from Firestore
 	var posts []domain.Post
 	iter := r.client.Collection(collectionName).Documents(ctx)
 	defer iter.Stop()
@@ -64,5 +81,14 @@ func (r *firestorePostRepository) FindAll(ctx context.Context) ([]domain.Post, e
 		posts = append(posts, post)
 	}
 	log.Printf("Firestore Repo: Found %d posts", len(posts))
+
+	// Cache the results
+	if len(posts) > 0 {
+		postsJSON, err := json.Marshal(posts)
+		if err == nil {
+			r.redis.Set(ctx, cacheKey, postsJSON, 5*time.Minute)
+		}
+	}
+
 	return posts, nil
 }

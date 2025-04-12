@@ -19,10 +19,24 @@ func main() {
 	credentialsPath := "pragmatic-reviews.json"
 	serverPort := ":8081"
 
+	// Add Redis configuration
+	redisHost := "localhost"
+	redisPort := "6379"
+	redisPassword := "" // Set your password if needed
+
 	// --- Initialization Context ---
 	// Use a background context for setup, potentially with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
+
+	// Initialize Redis
+	log.Println("Main: Initializing Redis...")
+	redisClient, err := datastore.InitRedis(ctx, redisHost, redisPort, redisPassword)
+	if err != nil {
+		log.Fatalf("Main: Failed to initialize Redis: %v", err)
+		os.Exit(1)
+	}
+	defer redisClient.Close()
 
 	// --- Infrastructure Initialization ---
 	log.Println("Main: Initializing Firestore...")
