@@ -112,7 +112,7 @@ Price: 100.000000, Size: 100.000000
 
 ## Limitation
 
-- Need to sort limits everytime the engine needs to match an order.
+- Need to sort limits every time the engine needs to match an order.
 - Scheduler to expire GTT orders hasn't been implemented
 - Code coverage is quite low due to time constraint
 - Some part of the code is not super efficient. Limits could be stored in a more efficient data structure like binary tree or red-black tree.
